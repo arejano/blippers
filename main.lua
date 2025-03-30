@@ -29,7 +29,9 @@ end
 local time = 0
 local time_const = 1 / 60
 
+
 function love.update(dt)
+  require("libs.lovebird.lovebird").update()
   time = time + dt
   if time >= time_const then
     game:update(time_const)

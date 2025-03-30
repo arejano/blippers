@@ -13,55 +13,50 @@ local enemy_factory = {
 }
 
 function enemy_factory:start(ecs)
-  -- Player
-  local player_sprite = utils.removeColorBackgroundFromImage("assets/chrono.png", { 255, 0, 255 })
+  local width, height, _ = utils.get_display_size()
+  local sprite = utils.removeColorBackgroundFromImage("assets/chrono.png", { 255, 0, 255 })
 
-  -- Define the regions for each animation
   local regions = {
     idle = {
-      { x = 57, y = 13, width = 20, height = 38 },
-      { x = 77, y = 13, width = 20, height = 38 },
-      { x = 97, y = 13, width = 20, height = 38 }
+      { x = 57, y = 11, width = 18, height = 38 },
+      { x = 77, y = 11, width = 18, height = 38 },
+      { x = 97, y = 11, width = 18, height = 38 }
     },
     down = {
-      { x = 57, y = 13, width = 20, height = 38 },
-      { x = 77, y = 13, width = 20, height = 38 },
-      { x = 97, y = 13, width = 20, height = 38 }
-    },
-    left = {
-      { x = 57, y = 53, width = 20, height = 38 },
-      { x = 77, y = 53, width = 20, height = 38 }
+      { x = 127, y = 13, width = 20, height = 38 },
+      { x = 147, y = 13, width = 20, height = 38 },
+      { x = 169, y = 13, width = 20, height = 38 },
+      { x = 191, y = 13, width = 20, height = 38 },
+      { x = 211, y = 13, width = 20, height = 38 },
+      { x = 232, y = 13, width = 20, height = 38 },
     },
     right = {
-      { x = 57, y = 93, width = 20, height = 38 },
-      { x = 77, y = 93, width = 20, height = 38 }
+      { x = 124, y = 94, width = 22, height = 38 },
+      { x = 147, y = 94, width = 22, height = 38 },
+      { x = 169, y = 94, width = 22, height = 38 },
+      { x = 194, y = 94, width = 22, height = 38 },
+      { x = 216, y = 94, width = 22, height = 38 },
+      { x = 238, y = 94, width = 22, height = 38 },
     },
     up = {
-      { x = 57, y = 133, width = 20, height = 38 },
-      { x = 77, y = 133, width = 20, height = 38 }
+      { x = 126, y = 57, width = 21, height = 38 },
+      { x = 148, y = 57, width = 21, height = 38 },
+      { x = 170, y = 57, width = 21, height = 38 },
+      { x = 191, y = 57, width = 21, height = 38 },
+      { x = 211, y = 57, width = 21, height = 38 },
+      { x = 232, y = 57, width = 21, height = 38 },
     }
   }
 
-  -- Create quads for each frame
-  local function createQuads(region)
-    local quads = {}
-    for _, frame in ipairs(region) do
-      table.insert(quads,
-        love.graphics.newQuad(frame.x, frame.y, frame.width, frame.height, player_sprite:getWidth(),
-          player_sprite:getHeight()))
-    end
-    return quads
-  end
-
   local animations = {
-    idle = anim8.newAnimation(createQuads(regions.idle), 1),
-    down = anim8.newAnimation(createQuads(regions.idle), 1),
-    left = anim8.newAnimation(createQuads(regions.left), 0.2),
-    right = anim8.newAnimation(createQuads(regions.right), 0.2),
-    up = anim8.newAnimation(createQuads(regions.up), 0.2)
+    idle = anim8.newAnimation(utils.createQuads(regions.idle, sprite), 1),
+    down = anim8.newAnimation(utils.createQuads(regions.down, sprite), 0.2),
+    left = anim8.newAnimation(utils.createQuads(regions.right, sprite), 0.2):flipH(),
+    right = anim8.newAnimation(utils.createQuads(regions.right, sprite), 0.2),
+    up = anim8.newAnimation(utils.createQuads(regions.up,sprite), 0.2)
   }
 
-  local width, height, _ = utils.get_display_size()
+
   ecs:add_entity({
     { type = c_types.InMovement, data = false },
     { type = c_types.Name,       data = "Elon Musk" },
@@ -69,8 +64,8 @@ function enemy_factory:start(ecs)
     { type = c_types.Position,   data = { x = 10, y = height / 2 } },
     { type = c_types.Direction,  data = "up" },
     { type = c_types.Speed,      data = 5 },
-    { type = c_types.Sprite,     data = player_sprite },
-    { type = c_types.SpriteSize, data = { w = 20, h = 32 } },
+    { type = c_types.Sprite,     data = sprite },
+    { type = c_types.SpriteSize, data = { w = 22, h = 38 } },
     {
       type = c_types.Animation,
       data = {
@@ -80,23 +75,24 @@ function enemy_factory:start(ecs)
     }
   })
 
-  ecs:add_entity({
-    { type = c_types.InMovement, data = false },
-    { type = c_types.Name,       data = "Francisquinho" },
-    { type = c_types.Enemy,      data = true },
-    { type = c_types.Position,   data = { x = 150, y = height / 2 } },
-    { type = c_types.Direction,  data = "up" },
-    { type = c_types.Speed,      data = 5 },
-    { type = c_types.Sprite,     data = player_sprite },
-    { type = c_types.SpriteSize, data = { w = 20, h = 32 } },
-    {
-      type = c_types.Animation,
-      data = {
-        current_animation = animations.idle,
-        animations = animations
-      }
-    }
-  })
+
+  -- ecs:add_entity({
+  --   { type = c_types.InMovement, data = false },
+  --   { type = c_types.Name,       data = "Francisquinho" },
+  --   { type = c_types.Enemy,      data = true },
+  --   { type = c_types.Position,   data = { x = 150, y = height / 2 } },
+  --   { type = c_types.Direction,  data = "up" },
+  --   { type = c_types.Speed,      data = 5 },
+  --   { type = c_types.Sprite,     data = sprite },
+  --   { type = c_types.SpriteSize, data = { w = 20, h = 32 } },
+  --   {
+  --     type = c_types.Animation,
+  --     data = {
+  --       current_animation = animations.idle,
+  --       animations = animations
+  --     }
+  --   }
+  -- })
 end
 
 return enemy_factory

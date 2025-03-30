@@ -51,5 +51,15 @@ return {
     end)
 
     return love.graphics.newImage(imageData) -- Retorna a nova imagem se
+  end,
+
+  createQuads = function(region, sprite)
+    local quads = {}
+    for _, frame in ipairs(region) do
+      table.insert(quads,
+        love.graphics.newQuad(frame.x, frame.y, frame.width, frame.height, sprite:getWidth(),
+          sprite:getHeight()))
+    end
+    return quads
   end
 }

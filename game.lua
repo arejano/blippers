@@ -10,6 +10,8 @@ local player_movement_system = require 'systems.player_movement_system'
 local camera_follow = require 'systems.camera_system'
 local name_render_system = require 'systems.name_render_system'
 
+local enemy_target
+
 local map_system = require "systems.map_system"
 
 local debug_system = require 'systems.debug_system'
