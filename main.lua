@@ -1,42 +1,59 @@
-ECS = require "libs.ecs-lua.ECS"
-
-world = nil
+local Game = require 'game'
+local ge = require "models.game_events"
+require 'globals'
 
 function love.load()
-    local World, System, Query, Component = ECS.World, ECS.System, ECS.Query, ECS.Component
+  love.window.setTitle("Meu RPG 2D")
 
-    -- Corrigindo a definição do componente Health
-    local Health = Component({ value = 100 })
-    local Position = Component({ x = 0, y = 0 })
-    local txt = "Hello world";
 
-    local isInAcid = Query.Filter(function()
-        return true -- it's wet season
-    end)
+  local displays = love.window.getDisplayCount() -- Conta quantos monitores existem
+  local targetDisplay = 2                        -- Altere esse valor para o monitor desejado (1, 2, ...)
 
-    local InAcidSystem = System("process", Query.All(Health, Position, isInAcid()))
+  if targetDisplay > displays then
+    targetDisplay = 1 -- Se o monitor não existir, usa o principal
+  end
 
-    function InAcidSystem:Update()
-        for i, entity in self:Result():Iterator() do
-            local health = entity:Get(Health)
-            health.value = health.value - 0.01
-        end
-    end
+  -- Obtém informações do monitor alvo
+  local width, height = love.window.getDesktopDimensions(targetDisplay)
 
-    -- Inicializando a variável world
-    world = World({ InAcidSystem })
+  -- Configura a janela em fullscreen no monitor desejado
+  love.window.setMode(width, height, {
+    fullscreen = true,
+    display = targetDisplay
+  })
 
-    -- Criando uma entidade com os componentes Position e Health
-    world:Entity(Position({ x = 5.0 }), Health({ value = 100 }))
+  game = Game:new()
+end
+
+local time = 0
+local time_const = 1 / 60
+
+function love.update(dt)
+  time = time + dt
+  if time >= time_const then
+    game:update(time_const)
+    time = time - (time_const)
+  end
 end
 
 function love.draw()
-    for _, entity in world:Exec(ECS.Query.All(Health)):Iterator() do
-        local health = entity:Get(Health)
-        love.graphics.print("Health: " .. math.floor(health.value), 10, 10)
-    end
+  game:draw()
 end
 
-function love.update(dt)
-    world:Update("process", dt)
+function love.resize(w, h)
+  game:resize(w, h)
+end
+
+function love.keypressed(key)
+  game:add_event({
+    type = ge.KeyboardInput,
+    data = { key = key, isDown = true }
+  })
+end
+
+function love.keyreleased(key)
+  game:add_event({
+    type = ge.KeyboardInput,
+    data = { key = key, isDown = false }
+  })
 end
