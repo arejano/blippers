@@ -1,11 +1,20 @@
+require 'globals'
+
 local Game = require 'game'
 local ge = require "models.game_events"
 local utils = require 'core.utils'
-require 'globals'
+local LoveProfiler = require 'loveprofiler'
+
 
 function love.load()
   love.window.setTitle("Meu RPG 2D")
 
+  profiler = LoveProfiler:new { config = {
+    driver = "console",
+    font_size = 17,
+    draw_x = 400,
+    color = { 0, 0, 1, 1 }
+  } }
   local width, height, target = utils.get_display_size()
 
   -- Configura a janela em fullscreen no monitor desejado
@@ -29,6 +38,7 @@ function love.update(dt)
 end
 
 function love.draw()
+  profiler:start()
   game:draw()
 end
 

@@ -21,10 +21,10 @@ end
 
 ---@param w Ecs
 function DebugSystem:update(w)
-  self:update_counter(w)
+  -- self:update_counter(w)
 
   lv.graphics.print(w.delta_time, 10, 10)
-  lv.graphics.print(inspect(w), 10, 60)
+  lv.graphics.print(inspect(#w.resources), 10, 40)
 end
 
 function DebugSystem:update_counter(world)

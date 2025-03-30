@@ -9,7 +9,13 @@ local ctypes = utils.make_enum({
   "Animation",
   "Grid",
   "Direction",
-  "InMovement"
+  "InMovement",
+  "Camera",
+  "CameraFollow",
+  "MapSTI",
+  "Name",
+  "Enemy",
+  "SpriteSize"
 
 })
 

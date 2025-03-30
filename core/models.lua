@@ -18,7 +18,7 @@ local ComponentResult = {}
 
 ---@class NewEvent
 ---@field type number
----@field event any
+---@field data any
 local NewEvent = {}
 
 ---@class KeyboardEvent

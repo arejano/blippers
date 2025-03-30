@@ -1,4 +1,3 @@
-local inspect = require 'libs.inspect'
 local c_type = require 'models.component_types'
 local events = require 'models.game_events'
 
@@ -13,11 +12,10 @@ local player_input_system = {
 		["d"] = "right",
 	},
 	pressed_keys = {},
-
 	animations_direction = {
 		["up"] = "up",
 		["left"] = "left",
-		["down"] = "idle",
+		["down"] = "down",
 		["right"] = "right",
 	},
 }
@@ -52,9 +50,11 @@ function player_input_system:update(w, dt, e)
 
 	w:set_component(self.data.player, c_type.Direction, directions)
 	w:set_component(self.data.player, c_type.InMovement, #directions > 0)
+	local animation = w:get_component(self.data.player, c_type.Animation).data
 	if #directions > 0 then
-		local animation = w:get_component(self.data.player, c_type.Animation).data
 		animation.current_animation = animation.animations[self.animations_direction[directions[1]]]
+	else
+		animation.current_animation = animation.animations["idle"]
 	end
 end
 

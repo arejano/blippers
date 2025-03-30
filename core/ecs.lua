@@ -24,6 +24,7 @@ local ECS = {
   systems_by_event = {},
 
   pool_event = {},
+  resources = {},
 
   -- query
   query_data = nil,
@@ -42,6 +43,14 @@ function ECS:new()
   local ecs = {}
   setmetatable(ecs, ECS)
   return ecs
+end
+
+function ECS:add_resource(resource_name, resource)
+  self.resources[resource_name] = resource
+end
+
+function ECS:get_resource(resource_name)
+  return self.resources[resource_name]
 end
 
 ---@param ctypes Array<integer>

@@ -1,4 +1,3 @@
-local inspect = require 'libs.inspect'
 local c_type = require 'models.component_types'
 local events = require 'models.game_events'
 
@@ -20,7 +19,7 @@ function player_movement_system:update(w, dt, e)
   ---@type boolean
   local in_movement = w:get_component(self.data.player, c_type.InMovement).data
   if in_movement then
-    local position_data = w:get_component(self.data.player, c_type.Position).data
+    local player_position = w:get_component(self.data.player, c_type.Position).data
     local speed_data = w:get_component(self.data.player, c_type.Speed).data
     local directions = w:get_component(self.data.player, c_type.Direction).data
 
@@ -46,8 +45,16 @@ function player_movement_system:update(w, dt, e)
       dy = dy * math.sqrt(0.5)
     end
 
-    position_data.x = position_data.x + dx * speed_data
-    position_data.y = position_data.y + dy * speed_data
+    player_position.x = player_position.x + dx * speed_data
+    player_position.y = player_position.y + dy * speed_data
+
+
+    -- local camera_id = w:query({ c_type.Camera })[1]
+    -- local camera_position = w:get_component(camera_id, c_type.Position).data
+    -- local camera = w:get_component(camera_id, c_type.Camera).data
+
+    -- camera:lookAt(player_position.x, player_position.y)
+    -- w:set_component(camera_id, c_type.Position, player_position)
   end
 end
 

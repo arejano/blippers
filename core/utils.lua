@@ -34,5 +34,22 @@ return {
     local width, height = love.window.getDesktopDimensions(targetDisplay)
 
     return width, height, targetDisplay
+  end,
+
+  removeColorBackgroundFromImage = function(imagePath, color)
+    local imageData = love.image.newImageData(imagePath)
+
+    -- Define a cor rosa que será removida (255, 0, 255)
+    local rKey, gKey, bKey = color[1], color[2], color[3]
+
+    imageData:mapPixel(function(x, y, r, g, b, a)
+      -- Se o pixel for rosa, torná-lo transparente
+      if r == rKey and g == gKey and b == bKey then
+        return r, g, b, 0 -- Define a transparência (0 no Alpha)
+      end
+      return r, g, b, a   -- Mantém os outros pixels inalterados
+    end)
+
+    return love.graphics.newImage(imageData) -- Retorna a nova imagem se
   end
 }
