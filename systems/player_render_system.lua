@@ -28,9 +28,9 @@ function render_system:update(world, dt)
   local animation = world:get_component(self.data.player, c_type.Animation).data
 
   if animation ~= nil and position ~= nil then
+    animation.current_animation:update(dt)
     animation.current_animation:draw(self.data.sprite, position.x, position.y, nil, 2, nil, 0, 0)
   end
-
 end
 
 return render_system

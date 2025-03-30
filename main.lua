@@ -1,25 +1,17 @@
 local Game = require 'game'
 local ge = require "models.game_events"
+local utils = require 'core.utils'
 require 'globals'
 
 function love.load()
   love.window.setTitle("Meu RPG 2D")
 
-
-  local displays = love.window.getDisplayCount() -- Conta quantos monitores existem
-  local targetDisplay = 2                        -- Altere esse valor para o monitor desejado (1, 2, ...)
-
-  if targetDisplay > displays then
-    targetDisplay = 1 -- Se o monitor não existir, usa o principal
-  end
-
-  -- Obtém informações do monitor alvo
-  local width, height = love.window.getDesktopDimensions(targetDisplay)
+  local width, height, target = utils.get_display_size()
 
   -- Configura a janela em fullscreen no monitor desejado
   love.window.setMode(width, height, {
-    fullscreen = true,
-    display = targetDisplay
+    -- fullscreen = true,
+    display = target
   })
 
   game = Game:new()

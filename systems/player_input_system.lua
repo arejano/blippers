@@ -12,7 +12,14 @@ local player_input_system = {
 		["s"] = "down",
 		["d"] = "right",
 	},
-	pressed_keys = {}
+	pressed_keys = {},
+
+	animations_direction = {
+		["up"] = "up",
+		["left"] = "left",
+		["down"] = "idle",
+		["right"] = "right",
+	},
 }
 
 ---@param w Ecs
@@ -41,8 +48,14 @@ function player_input_system:update(w, dt, e)
 		end
 	end
 
+
+
 	w:set_component(self.data.player, c_type.Direction, directions)
 	w:set_component(self.data.player, c_type.InMovement, #directions > 0)
+	if #directions > 0 then
+		local animation = w:get_component(self.data.player, c_type.Animation).data
+		animation.current_animation = animation.animations[self.animations_direction[directions[1]]]
+	end
 end
 
 return player_input_system
