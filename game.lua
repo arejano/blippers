@@ -7,14 +7,18 @@ local e_factory = require 'systems.eneme_factory'
 local render_system = require 'systems.render_system'
 local player_input_system = require 'systems.player_input_system'
 local player_movement_system = require 'systems.player_movement_system'
-local camera_follow = require 'systems.camera_system'
+local camera_follow_system = require 'systems.camera_follow_system'
 local name_render_system = require 'systems.name_render_system'
+local camera_system = require 'systems.camera_system'
 
 local enemy_target
 
 local map_system = require "systems.map_system"
 
 local debug_system = require 'systems.debug_system'
+
+local keyboard_system = require 'systems.keyboard_system'
+local bullet_system = require 'systems.bullet_system'
 
 ---@class Game
 ---@field world Ecs | nil
@@ -27,7 +31,6 @@ Game.__index = Game
 
 function Game:new()
   local game = {
-    -- game_ui = GameUI:new(),
     world = ECS:new()
   }
 
@@ -38,8 +41,11 @@ function Game:new()
   game.world:add_system(render_system)
   game.world:add_system(player_input_system)
   game.world:add_system(player_movement_system)
-  game.world:add_system(camera_follow)
+  game.world:add_system(camera_follow_system)
   game.world:add_system(name_render_system)
+  game.world:add_system(camera_system)
+  game.world:add_system(keyboard_system)
+  game.world:add_system(bullet_system)
 
   setmetatable(game, Game)
   return game
@@ -69,7 +75,7 @@ end
 
 function Game:draw()
   if self.world ~= nil then
-    self.world:run_system_by_event(ge.Render)
+    self.world:run_system_by_event({ type = ge.Render })
   end
 end
 

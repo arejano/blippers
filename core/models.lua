@@ -15,7 +15,6 @@ local WindowSize = {}
 local ComponentResult = {}
 
 
-
 ---@class NewEvent
 ---@field type number
 ---@field data any

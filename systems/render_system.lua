@@ -12,10 +12,6 @@ local render_system = {
   data = {
     player = nil,
     map = nil,
-    window_size = {
-      width = 0,
-      height = 0
-    }
   },
   events = { events.Render }
 }
@@ -35,7 +31,6 @@ function render_system:start(w)
 
   -- Init Camera
   local Camera = require 'libs.hump.camera'
-  self.data.window_size = { width = width, height = height }
   local camera = Camera()
 
   w:add_entity({
@@ -46,7 +41,7 @@ end
 
 ---@param world Ecs
 ---@param dt integer
-function render_system:update(world, dt)
+function render_system:update(world, dt, event)
   -- Player
   if not self.data.player then
     self.data.player = world:query({ c_type.Player })[1]
@@ -62,17 +57,8 @@ function render_system:update(world, dt)
 
   -- Camera
   camera:attach()
-  -- local camera_position = world:get_component(camera_id, c_type.Position).data
 
-  -- Map Render
-  -- local map = world:get_resource(resources.MapRender)
-  -- if map ~= nil then
-  --   love.graphics.setColor(1, 1, 1)
-  --   map:draw(-camera_position.x + self.data.window_size.width / 2,
-  --     -camera_position.y + self.data.window_size.height / 2)
-  -- end
-
-  -- Entities Render
+  -- Entities With Animation -  Render
   local to_render = world:query({ c_type.Sprite, c_type.Animation })
 
   if to_render ~= nil then
@@ -87,6 +73,19 @@ function render_system:update(world, dt)
     end
   end
 
+  -- Simple Entities
+  local simple_to_render = world:query({ c_type.Bullet })
+  if simple_to_render ~= nil then
+    for _, v in ipairs(simple_to_render) do
+      local position = world:get_component(v, c_type.Position).data
+      local bullet = world:get_component(v, c_type.Bullet).data
+
+      if position ~= nil and bullet ~= nil then
+        love.graphics.rectangle("fill", position.x, position.y, bullet.width, bullet.height)
+      end
+    end
+  end
+
   -- Name Render
   local name_render = world:get_resource("NameRender")
   if name_render ~= nil then
@@ -94,6 +93,8 @@ function render_system:update(world, dt)
   end
 
   camera:detach()
+
+  love.graphics.print(world.resize, 10, 10);
 end
 
 return render_system

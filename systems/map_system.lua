@@ -8,7 +8,7 @@ local sti = require "libs.sti.sti"
 
 ---@class MapSystem
 local MapSystem = {
-  events = { events.Render },
+  events = { events.Render, events.ChangeMap },
   current_map = nil,
   maps_name = {},
   maps = {
@@ -19,7 +19,15 @@ local MapSystem = {
         width = nil,
         height = nil,
       }
-    }
+    },
+    -- small = {
+    --   map_handle = nil,
+    --   path = "assets/second_map.lua",
+    --   size = {
+    --     width = nil,
+    --     height = nil,
+    --   }
+    -- }
   }
 }
 
@@ -39,23 +47,29 @@ end
 
 ---@param w Ecs
 ---@param dt integer
-function MapSystem:update(world, dt)
-  local width, height = utils.get_display_size();
+---@param event NewEvent
+function MapSystem:update(world, dt, event)
+  -- if event.type == events.ChangeMap then
+  --   print("ChangeMap")
+
+  --   if self.current_map == "starter" then
+  --     self.current_map = "small"
+  --   else
+  --     self.current_map = "starter"
+  --   end
+  -- end
+
 
   local camera_id = world:query({ c_type.Camera })[1]
   local camera_position = world:get_component(camera_id, c_type.Position).data
+
+  local width, height = utils.get_display_size()
 
   if camera_position ~= nil then
     self.maps[self.current_map].map_handle:draw(
       -camera_position.x + width / 2,
       -camera_position.y + height / 2
     )
-  end
-end
-
-function draw_debug(self)
-  for k, v in pairs(self.maps) do
-    love.graphics.print(inspect(v.size), 100, 100)
   end
 end
 

@@ -10,6 +10,7 @@ local C_COUNTER = 0
 ---@field game_events any[]
 ---@field entitites number[]
 local ECS = {
+  resize = 0,
   game_modes = {},
   game_events = {},
   last_key = "nil",
@@ -55,7 +56,7 @@ end
 
 ---@param ctypes Array<integer>
 function ECS:query(ctypes)
-  self.query_types = ctypes
+  -- self.query_types = ctypes
   ---@type Array<integer>
   local entities = {}
 
@@ -68,14 +69,14 @@ function ECS:query(ctypes)
       end
     end
   end
-  self.query_data = entities
-  return self.query_data
+  -- self.query_data = entities
+  return entities
 end
 
-function ECS:each(fn)
-  if fn == nil then return end
-  fn(self.query_data)
-end
+-- function ECS:each(fn)
+--   if fn == nil then return end
+--   fn(self.query_data)
+-- end
 
 ---@param components Array<any>
 function ECS:add_entity(components)
@@ -191,10 +192,10 @@ function ECS:update(dt)
   end
 end
 
----@param event number
+---@param event NewEvent
 function ECS:run_system_by_event(event)
-  self:update_counter_by_event({ type = event })
-  local to_run = self.systems_by_event[event]
+  self:update_counter_by_event { type = event.type }
+  local to_run = self.systems_by_event[event.type]
 
   if to_run ~= nil then
     for i, s in pairs(to_run) do

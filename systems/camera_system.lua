@@ -1,31 +1,36 @@
 local c_type = require 'models.component_types'
 local events = require 'models.game_events'
+local utils = require 'core.utils'
 
 ---@class CameraSystem
-local CameraFollow = {
+local CameraSystem = {
   data = {},
-  events = { events.Tick }
+  events = { events.WindowResize }
 }
 
 ---@param w Ecs
-function CameraFollow:start(w)
+function CameraSystem:start(w)
 end
 
 ---@param w Ecs
----@param dt integer
-function CameraFollow:update(w, dt)
-  local to_follow          = w:query({ c_type.CameraFollow })[1]
+---@param dt number
+---@param event NewEvent
+function CameraSystem:update(w, dt, event)
+  print("camera_system")
+  if event.type == events.WindowResize then
+    local camera_id = w:query({ c_type.Camera })[1]
+    local width, height = utils.get_display_size()
 
-  local to_follow_position = w:get_component(to_follow, c_type.Position).data
-  local camera_id          = w:query({ c_type.Camera })[1]
+    if camera_id ~= nil then
+      local scaleX  = event.data.width / width
+      local scaleY  = event.data.height / height
+      local newZoom = math.min(scaleX, scaleY) -- Mantém proporção correta
 
-  if camera_id ~= nil then
-    local camera_position = w:get_component(camera_id, c_type.Position).data
-    local camera          = w:get_component(camera_id, c_type.Camera).data
-
-    camera:lookAt(to_follow_position.x, to_follow_position.y)
-    w:set_component(camera_id, c_type.Position, to_follow_position)
+      local camera  = w:get_component(camera_id, c_type.Camera).data
+      camera:zoomTo(newZoom)
+      w.resize = w.resize + 1
+    end
   end
 end
 
-return CameraFollow
+return CameraSystem

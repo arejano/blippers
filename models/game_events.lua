@@ -6,6 +6,9 @@ local ge = utils.make_enum({
   "MouseInput",
   "Render",
   "Tick",
+  "WindowResize",
+  "ChangeMap",
+  "Shot"
 })
 
 return ge

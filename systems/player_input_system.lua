@@ -4,7 +4,7 @@ local events = require 'models.game_events'
 ---@class PlayerInputSystem
 local player_input_system = {
 	data = { player = nil },
-	events = { events.KeyboardInput, events.Tick },
+	events = { events.KeyboardInput },
 	player_keys = {
 		["w"] = "up",
 		["a"] = "left",

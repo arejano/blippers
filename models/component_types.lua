@@ -15,8 +15,9 @@ local ctypes = utils.make_enum({
   "MapSTI",
   "Name",
   "Enemy",
-  "SpriteSize"
-
+  "SpriteSize",
+  "Bullet",
+  "LifeTime"
 })
 
 return ctypes
