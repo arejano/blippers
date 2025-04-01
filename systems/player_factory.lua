@@ -1,4 +1,4 @@
-local c_types = require 'models.component_types'
+eocal c_types = require 'models.component_types'
 local utils = require 'core.utils'
 local anim8 = require 'libs.anim8.anim8'
 
@@ -100,13 +100,14 @@ function player_factory:start(ecs)
 
 	ecs:add_entity({
 		{ type = c_types.Player,       data = true },
+		{ type = c_types.Render,       data = true },
 		{ type = c_types.InMovement,   data = false },
 		{ type = c_types.Name,         data = "Richard Feyman" },
 		{ type = c_types.CameraFollow, data = true },
 		{ type = c_types.Position,     data = { x = width / 2, y = height / 2 } },
 		{ type = c_types.Direction,    data = "up" },
 		{ type = c_types.Speed,        data = 5 },
-		{ type = c_types.SpriteSize,   data = { w = 20, h = 32 } },
+		{ type = c_types.teSize,   data = { w = 20, h = 32 } },
 		{ type = c_types.Sprite,       data = sprite },
 		{
 			type = c_types.Animation,

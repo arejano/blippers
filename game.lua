@@ -35,17 +35,18 @@ function Game:new()
   }
 
   -- game.world:add_system(debug_system)
-  game.world:add_system(map_system)
+
+  game.world:add_system(camera_follow_system)
+  game.world:add_system(camera_system)
   game.world:add_system(p_factory)
+  game.world:add_system(map_system)
   game.world:add_system(e_factory)
-  game.world:add_system(render_system)
   game.world:add_system(player_input_system)
   game.world:add_system(player_movement_system)
-  game.world:add_system(camera_follow_system)
-  game.world:add_system(name_render_system)
-  game.world:add_system(camera_system)
   game.world:add_system(keyboard_system)
   game.world:add_system(bullet_system)
+  -- game.world:add_system(name_render_system)
+  game.world:add_system(render_system)
 
   setmetatable(game, Game)
   return game

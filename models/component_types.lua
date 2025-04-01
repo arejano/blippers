@@ -3,6 +3,7 @@ local utils = require 'core.utils'
 ---@enum ComponentTypes
 local ctypes = utils.make_enum({
   "Position",
+  "Render",
   "Player",
   "Speed",
   "Sprite",

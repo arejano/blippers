@@ -10,9 +10,9 @@ function love.load()
   local width, height, target = utils.get_display_size()
 
   -- Configura a janela em fullscreen no monitor desejado
-  love.window.setMode(800, 600, {
-    -- fullscreen = true,
-    -- display = target,
+  love.window.setMode(width, height, {
+    fullscreen = true,
+    display = target,
     -- resizable = true
   })
 
@@ -64,4 +64,19 @@ function love.keyreleased(key)
     type = ge.KeyboardInput,
     data = { key = key, isDown = false }
   })
+end
+
+function love.mousepressed(x, y, button)
+  -- print("mouse pressed", x, y)
+  GAME.world:add_event({
+    type = ge.Shot
+  })
+end
+
+function love.mouserelease(x, y, button)
+  print("mouse release", x, y)
+end
+
+function love.conf(t)
+  t.console = true
 end

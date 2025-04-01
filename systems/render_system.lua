@@ -1,4 +1,4 @@
--- local inspect = require 'libs.inspect'
+local inspect = require 'libs.inspect'
 local c_type = require 'models.component_types'
 local events = require 'models.game_events'
 local utils = require 'core.utils'
@@ -51,7 +51,6 @@ function render_system:update(world, dt, event)
     self.data.sprite = world:get_component(self.data.player, c_type.Sprite).data
   end
 
-
   local camera_id = world:query({ c_type.Camera })[1]
   local camera    = world:get_component(camera_id, c_type.Camera).data
 
@@ -59,32 +58,38 @@ function render_system:update(world, dt, event)
   camera:attach()
 
   -- Entities With Animation -  Render
-  local to_render = world:query({ c_type.Sprite, c_type.Animation })
+  local to_render = world:query({ c_type.Render })
 
   if to_render ~= nil then
     for _, v in ipairs(to_render) do
       local position = world:get_component(v, c_type.Position).data
       local animation = world:get_component(v, c_type.Animation).data
+      local sprite = world:get_component(v, c_type.Sprite).data
 
-      if animation ~= nil and position ~= nil then
-        animation.current_animation:update(dt)
-        animation.current_animation:draw(self.data.sprite, position.x, position.y, nil, 2, 2, 0, nil)
+      if animation ~= nil then
+        if animation.current_animation ~= nil then
+          animation.current_animation:update(dt)
+          animation.current_animation:draw(sprite, position.x, position.y, nil, 2, 2, 0, nil)
+        end
+      else
+        love.graphics.draw(sprite, position.x, position.y)
       end
     end
   end
 
   -- Simple Entities
-  local simple_to_render = world:query({ c_type.Bullet })
-  if simple_to_render ~= nil then
-    for _, v in ipairs(simple_to_render) do
-      local position = world:get_component(v, c_type.Position).data
-      local bullet = world:get_component(v, c_type.Bullet).data
+  -- local simple_to_render = world:query({ c_type.Bullet })
+  -- if simple_to_render ~= nil then
+  --   for _, v in ipairs(simple_to_render) do
+  --     local position = world:get_component(v, c_type.Position).data
+  --     local bullet = world:get_component(v, c_type.Bullet).data
+  --     local sprite = world:get_component(v, c_type.BulletSprite).data
 
-      if position ~= nil and bullet ~= nil then
-        love.graphics.rectangle("fill", position.x, position.y, bullet.width, bullet.height)
-      end
-    end
-  end
+  --     if position ~= nil and bullet ~= nil then
+  --       love.graphics.draw(sprite, position.x, position.y)
+  --     end
+  --   end
+  -- end
 
   -- Name Render
   local name_render = world:get_resource("NameRender")
@@ -94,7 +99,8 @@ function render_system:update(world, dt, event)
 
   camera:detach()
 
-  love.graphics.print(world.resize, 10, 10);
+  love.graphics.print(1 / world.delta_time, 10, 10);
+  love.graphics.print("Entidades: " .. #world.entities, 10, 20);
 end
 
 return render_system

@@ -53,7 +53,7 @@ function enemy_factory:start(ecs)
     down = anim8.newAnimation(utils.createQuads(regions.down, sprite), 0.2),
     left = anim8.newAnimation(utils.createQuads(regions.right, sprite), 0.2):flipH(),
     right = anim8.newAnimation(utils.createQuads(regions.right, sprite), 0.2),
-    up = anim8.newAnimation(utils.createQuads(regions.up,sprite), 0.2)
+    up = anim8.newAnimation(utils.createQuads(regions.up, sprite), 0.2)
   }
 
 
@@ -62,6 +62,7 @@ function enemy_factory:start(ecs)
     { type = c_types.Name,       data = "Elon Musk" },
     { type = c_types.Enemy,      data = true },
     { type = c_types.Position,   data = { x = 10, y = height / 2 } },
+    { type = c_types.Render,     data = true },
     { type = c_types.Direction,  data = "up" },
     { type = c_types.Speed,      data = 5 },
     { type = c_types.Sprite,     data = sprite },
@@ -74,25 +75,6 @@ function enemy_factory:start(ecs)
       }
     }
   })
-
-
-  -- ecs:add_entity({
-  --   { type = c_types.InMovement, data = false },
-  --   { type = c_types.Name,       data = "Francisquinho" },
-  --   { type = c_types.Enemy,      data = true },
-  --   { type = c_types.Position,   data = { x = 150, y = height / 2 } },
-  --   { type = c_types.Direction,  data = "up" },
-  --   { type = c_types.Speed,      data = 5 },
-  --   { type = c_types.Sprite,     data = sprite },
-  --   { type = c_types.SpriteSize, data = { w = 20, h = 32 } },
-  --   {
-  --     type = c_types.Animation,
-  --     data = {
-  --       current_animation = animations.idle,
-  --       animations = animations
-  --     }
-  --   }
-  -- })
 end
 
 return enemy_factory

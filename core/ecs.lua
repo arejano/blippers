@@ -56,7 +56,6 @@ end
 
 ---@param ctypes Array<integer>
 function ECS:query(ctypes)
-  -- self.query_types = ctypes
   ---@type Array<integer>
   local entities = {}
 
@@ -69,7 +68,7 @@ function ECS:query(ctypes)
       end
     end
   end
-  -- self.query_data = entities
+
   return entities
 end
 
@@ -87,14 +86,39 @@ function ECS:add_entity(components)
   end
 end
 
+function ECS:remove_entity(entity_id)
+  -- Verifica se a entidade existe
+  if not self.entities[entity_id] then
+    return
+  end
+
+  -- Remove a entidade das listas de componentes
+  for _, component_type in ipairs(self.entities[entity_id]) do
+    local entities_with_component = self.entity_by_c_type[component_type]
+    for i, entity in ipairs(entities_with_component) do
+      if entity == entity_id then
+        table.remove(entities_with_component, i)
+        break
+      end
+    end
+  end
+
+  -- Remove os componentes da tabela de componentes
+  for _, component_type in ipairs(self.entities[entity_id]) do
+    local key = entity_id .. component_type
+    self.components[key] = nil
+  end
+
+  -- Remove a entidade da lista de entidades
+  self.entities[entity_id] = nil
+end
+
 ---@param entity integer
 ---@param component Component
 function ECS:register_component(entity, component)
   -- Escape
   local invalid_keys = utils.check_keys({ "type", "data" }, component)
   if #invalid_keys > 0 then return nil end
-
-  -- local new_component_id = #self.components + 1
 
   -- Cria a tabela caso nao exista
   if self.entity_by_c_type[component.type] == nil then
