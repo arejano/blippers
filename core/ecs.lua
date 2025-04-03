@@ -1,4 +1,5 @@
 local utils = require 'core.utils'
+local inspect = require 'libs.inspect'
 
 
 ---@class Array<T>: { [integer]: T }
@@ -9,7 +10,10 @@ local C_COUNTER = 0
 ---@field game_modes any[]
 ---@field game_events any[]
 ---@field entitites number[]
+---@field entity_by_c_type = number[]
 local ECS = {
+  last_entity = 1,
+  state = "Starting",
   resize = 0,
   game_modes = {},
   game_events = {},
@@ -22,6 +26,7 @@ local ECS = {
   components = {},
 
   systems = {},
+  systems_status = {},
   systems_by_event = {},
 
   pool_event = {},
@@ -46,30 +51,136 @@ function ECS:new()
   return ecs
 end
 
-function ECS:add_resource(resource_name, resource)
-  self.resources[resource_name] = resource
+function ECS:start()
+  self.state = "Running"
+end
+
+function ECS:add_resource(type, resource)
+  if self.resources[type] == nil then
+    self.resources[type] = {}
+  end
+  table.insert(self.resources[type], resource)
 end
 
 function ECS:get_resource(resource_name)
   return self.resources[resource_name]
 end
 
----@param ctypes Array<integer>
-function ECS:query(ctypes)
-  ---@type Array<integer>
-  local entities = {}
+function ECS:merge_query(...)
+  local queries = {}
 
-  for _, v in pairs(ctypes) do
-    if self.entity_by_c_type[v] then
-      for _, entity_id in ipairs(self.entity_by_c_type[v]) do
-        if not entities[entity_id] then
-          table.insert(entities, entity_id)
-        end
-      end
+  for i, v in ipairs({ ... }) do
+    table.insert(queries, self:new_query(v))
+  end
+  return utils.merge(queries)
+end
+
+function ECS:new_query(c_types, system_info)
+  if c_types == nil or #c_types == 0 then return {} end
+
+  local min_key = c_types[1]
+
+  if min_key == nil then return {} end
+
+  for _, c_type in ipairs(c_types) do
+    if self.entity_by_c_type[c_type] == nil then return {} end
+
+    if #self.entity_by_c_type[c_type] < #self.entity_by_c_type[min_key] then
+      min_key = c_type
     end
   end
 
-  return entities
+  local entity_set = {}
+  for _, entity in ipairs(self.entity_by_c_type[min_key]) do
+    entity_set[entity] = true
+  end
+
+  for _, key in ipairs(c_types) do
+    if key ~= min_key then
+      local new_set = {}
+      for _, entity in ipairs(self.entity_by_c_type[key]) do
+        if entity_set[entity] then
+          new_set[entity] = true
+        end
+      end
+      entity_set = new_set
+    end
+  end
+
+  local result = {}
+  for key, value in pairs(entity_set) do
+    table.insert(result, key)
+  end
+
+  return result
+end
+
+---@param c_types number[]
+---@oaram system_info SystemInfo
+function ECS:new_query_2(c_types, system_info)
+  if c_types == nil or #c_types == 0 then return {} end
+
+  local min_key = c_types[1]
+
+  if min_key == nil then return {} end
+
+  for _, c_type in ipairs(c_types) do
+    if self.entity_by_c_type[c_type] == nil then return {} end
+
+    if #self.entity_by_c_type[c_type] < #self.entity_by_c_type[min_key] then
+      min_key = c_type
+    end
+  end
+
+  local entity_set = {}
+  for _, entity in ipairs(self.entity_by_c_type[min_key]) do
+    entity_set[entity] = true
+  end
+
+  for _, key in ipairs(c_types) do
+    if key ~= min_key then
+      local new_set = {}
+      for _, entity in ipairs(self.entity_by_c_type[key]) do
+        new_set[entity] = true
+      end
+
+      entity_set = new_set
+    end
+  end
+
+
+  local result = {}
+  for key, value in pairs(entity_set) do
+    table.insert(result, key)
+  end
+
+  -- Para manter a ordem da lista na saida ?? Acho que nao precisa
+  -- table.sort(result)
+
+  return result
+end
+
+---@param c_types Array<integer>
+function ECS:query(c_types, system_info)
+  return self:new_query(c_types)
+  -- if system_info == nil then system_info = "null_system" end
+
+  -- -- local qr = self:new_query(ctypes, system_info)
+
+  -- ---@type Array<integer>
+  -- local result = {}
+
+  -- for _, v in pairs(ctypes) do
+  --   if self.entity_by_c_type[v] then
+  --     for _, entity_id in ipairs(self.entity_by_c_type[v]) do
+  --       if not result[entity_id] then
+  --         table.insert(result, entity_id)
+  --       end
+  --     end
+  --   end
+  -- end
+
+  -- return result
 end
 
 -- function ECS:each(fn)
@@ -79,7 +190,8 @@ end
 
 ---@param components Array<any>
 function ECS:add_entity(components)
-  local new_entity = #self.entities + 1
+  local new_entity = self.last_entity + 1
+  self.last_entity = new_entity
 
   for _, component in pairs(components) do
     self:register_component(new_entity, component)
@@ -111,6 +223,10 @@ function ECS:remove_entity(entity_id)
 
   -- Remove a entidade da lista de entidades
   self.entities[entity_id] = nil
+
+
+  -- Apos Remover os sistemas, entender se existem mais componentes daquele sistema.
+  -- se nao existem, desligar os sistemas que nao precisam executar
 end
 
 ---@param entity integer
@@ -140,6 +256,18 @@ function ECS:register_component(entity, component)
   end
   table.insert(self.entities[entity], component.type)
   C_COUNTER = C_COUNTER + 1
+
+  self:update_system_state()
+end
+
+function ECS:update_system_state()
+  for index, sys in ipairs(self.systems) do
+    -- if sys.system.watch ~= nil then
+    -- if sys.system.watch[component.type] == true then
+    self.systems_status[index] = true
+    -- end
+    -- end
+  end
 end
 
 ---@param event NewEvent
@@ -173,13 +301,22 @@ end
 ---@param c_type integer
 ---@param data table
 function ECS:set_component(entity, c_type, data)
+  if entity == nil or c_type == nil or data == data == nil then
+    return
+  end
+
   self.components[entity .. c_type] = data
 end
 
 ---@param system any
 function ECS:add_system(system)
   local new_id = #self.systems + 1;
-  self.systems[new_id] = system
+
+  self.systems[new_id] = {
+    system = system
+  }
+
+  self.systems_status[new_id] = true
 
   if system.start then
     system:start(self)
@@ -206,10 +343,14 @@ function ECS:update(dt)
     self.counters.event_consumed = self.counters.event_consumed + 1
 
     local to_run = self.systems_by_event[event.type]
-    if to_run ~= nil then
-      for i, s in pairs(to_run) do
-        if self.systems[s].update ~= nil then
-          self.systems[s]:update(self, self.delta_time, event)
+    if to_run == nil then return end
+
+    for i, s in pairs(to_run) do
+      local system = self.systems[s]
+
+      if self.systems_status[s] == true then
+        if system.system.update ~= nil then
+          system.system:update(self, self.delta_time, event)
         end
       end
     end
@@ -223,7 +364,7 @@ function ECS:run_system_by_event(event)
 
   if to_run ~= nil then
     for i, s in pairs(to_run) do
-      self.systems[s]:update(self, self.delta_time, event)
+      self.systems[s].system:update(self, self.delta_time, event)
     end
   end
 end

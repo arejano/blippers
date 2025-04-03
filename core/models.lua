@@ -24,3 +24,9 @@ local NewEvent = {}
 ---@field key string
 ---@field isDOwn boolean
 local KeyboardEvent = {}
+
+
+---@class SystemInfo
+---@field name string
+---@field data any
+local SystemInfo = {}

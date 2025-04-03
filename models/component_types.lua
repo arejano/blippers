@@ -4,6 +4,7 @@ local utils = require 'core.utils'
 local ctypes = utils.make_enum({
   "Position",
   "Render",
+  "Transform",
   "Player",
   "Speed",
   "Sprite",
@@ -18,7 +19,7 @@ local ctypes = utils.make_enum({
   "Enemy",
   "SpriteSize",
   "Bullet",
-  "LifeTime"
+  "LifeTime",
 })
 
 return ctypes

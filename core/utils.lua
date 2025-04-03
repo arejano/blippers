@@ -1,3 +1,16 @@
+function createSet(t)
+  local v_set = {}
+  for i, v in ipairs(t) do
+    v_set[v] = true
+  end
+  return v_set
+end
+
+function contains(set, value)
+  return set[value] ~= nil
+end
+
+local inspect = require 'libs.inspect'
 return {
   check_keys = function(keys, t)
     local invalids = {}
@@ -15,7 +28,7 @@ return {
     end
     return setmetatable(enum, {
       __index = function(_, key)
-        error("Chave" .. tostring(v) .. " nao existe no enum")
+        error("Chave" .. tostring(ke) .. " nao existe no enum - Valide os 'c_type' da entidade")
       end,
       __newindex = function(_, key, value)
         error("Nao eh possivel modificar o enum")
@@ -61,5 +74,22 @@ return {
           sprite:getHeight()))
     end
     return quads
+  end,
+
+
+  merge = function(...)
+    local result = {}
+    for _, tbl in ipairs({ ... }) do
+      for i, value in ipairs(tbl) do
+        -- if result[value[1]] ~= nil then
+        local v_set = createSet(result)
+        local is_present = contains(v_set, value[1])
+        if is_present == false then
+          table.insert(result, value[1])
+        end
+        -- end
+      end
+    end
+    return result
   end
 }

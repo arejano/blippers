@@ -61,12 +61,24 @@ function enemy_factory:start(ecs)
     { type = c_types.InMovement, data = false },
     { type = c_types.Name,       data = "Elon Musk" },
     { type = c_types.Enemy,      data = true },
-    { type = c_types.Position,   data = { x = 10, y = height / 2 } },
     { type = c_types.Render,     data = true },
     { type = c_types.Direction,  data = "up" },
     { type = c_types.Speed,      data = 5 },
-    { type = c_types.Sprite,     data = sprite },
-    { type = c_types.SpriteSize, data = { w = 22, h = 38 } },
+
+    {
+      type = c_types.Transform,
+      data = {
+        position = { x = width - width / 3, y = height / 1.5 },
+        scale = { sx = 2, sy = 2 },
+        angle = 0,
+        rotation = { ox = 0, oy = 0 },
+        size = {
+          width = 38,
+          height = 76
+        }
+      }
+    },
+    { type = c_types.Sprite, data = sprite },
     {
       type = c_types.Animation,
       data = {

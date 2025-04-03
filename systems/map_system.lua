@@ -60,7 +60,18 @@ function MapSystem:update(world, dt, event)
   -- end
 
 
-  local camera_id = world:query({ c_type.Camera })[1]
+  local camera_id = world:new_query({ c_type.Camera }, "map_system")[1]
+
+  if camera_id == nil then
+    local w, h = utils.get_display_size()
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.rectangle("fill", w / 2, h / 2, 200, 40)
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.print("LOG:MapSystem::camera_id == nil - Valide a Entidade:Camera ou ECS:query()")
+    return
+  end
+
+
   local camera_position = world:get_component(camera_id, c_type.Position).data
 
   local width, height = utils.get_display_size()

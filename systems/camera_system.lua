@@ -18,7 +18,7 @@ end
 function CameraSystem:update(w, dt, event)
   print("camera_system")
   if event.type == events.WindowResize then
-    local camera_id = w:query({ c_type.Camera })[1]
+    local camera_id = w:query({ c_type.Camera }, "camera_system")[1]
     local width, height = utils.get_display_size()
 
     if camera_id ~= nil then

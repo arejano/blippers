@@ -3,6 +3,9 @@ local events = require 'models.game_events'
 
 ---@class PlayerMovementSystem
 local player_movement_system = {
+  watch = {
+    [c_type.Player] = true,
+  },
   data = { player = nil },
   events = { events.Tick }
 }
@@ -13,13 +16,15 @@ local player_movement_system = {
 function player_movement_system:update(w, dt, e)
   -- Player
   if not self.data.player then
-    self.data.player = w:query({ c_type.Player })[1]
+    local id = w:new_query({ c_type.Player })[1]
+    if id == nil then return end
+    self.data.player = id
   end
 
   ---@type boolean
   local in_movement = w:get_component(self.data.player, c_type.InMovement).data
   if in_movement then
-    local player_position = w:get_component(self.data.player, c_type.Position).data
+    local player_position = w:get_component(self.data.player, c_type.Transform).data.position
     local speed_data = w:get_component(self.data.player, c_type.Speed).data
     local directions = w:get_component(self.data.player, c_type.Direction).data
 

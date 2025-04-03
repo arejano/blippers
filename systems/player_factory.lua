@@ -1,4 +1,4 @@
-eocal c_types = require 'models.component_types'
+local c_types = require 'models.component_types'
 local utils = require 'core.utils'
 local anim8 = require 'libs.anim8.anim8'
 
@@ -104,11 +104,22 @@ function player_factory:start(ecs)
 		{ type = c_types.InMovement,   data = false },
 		{ type = c_types.Name,         data = "Richard Feyman" },
 		{ type = c_types.CameraFollow, data = true },
-		{ type = c_types.Position,     data = { x = width / 2, y = height / 2 } },
-		{ type = c_types.Direction,    data = "up" },
-		{ type = c_types.Speed,        data = 5 },
-		{ type = c_types.teSize,   data = { w = 20, h = 32 } },
-		{ type = c_types.Sprite,       data = sprite },
+		{
+			type = c_types.Transform,
+			data = {
+				position = { x = width / 2, y = height / 2 },
+				scale = { sx = 2, sy = 2 },
+				angle = 0,
+				rotation = { ox = 0, oy = 0 },
+				size = {
+					width = 38,
+					height = 76
+				}
+			}
+		},
+		{ type = c_types.Direction,  data = "up" },
+		{ type = c_types.Speed,      data = 5 },
+		{ type = c_types.Sprite,     data = sprite },
 		{
 			type = c_types.Animation,
 			data = {

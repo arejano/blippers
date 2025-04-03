@@ -3,6 +3,10 @@ local events = require 'models.game_events'
 
 ---@class PlayerInputSystem
 local player_input_system = {
+	name = "player_input_system",
+	watch = {
+		[c_type.Player] = false,
+	},
 	data = { player = nil },
 	events = { events.KeyboardInput },
 	player_keys = {
@@ -30,7 +34,9 @@ function player_input_system:update(w, dt, e)
 
 	-- Player
 	if not self.data.player then
-		self.data.player = w:query({ c_type.Player })[1]
+		local id = w:new_query({ c_type.Player })[1]
+		if id == nil then return end
+		self.data.player = id
 	end
 
 	if e.data.isDown then
