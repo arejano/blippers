@@ -3,6 +3,7 @@ local events = require 'models.game_events'
 
 ---@class PlayerMovementSystem
 local player_movement_system = {
+  name = "player_movement_system",
   watch = {
     [c_type.Player] = true,
   },
@@ -16,7 +17,7 @@ local player_movement_system = {
 function player_movement_system:update(w, dt, e)
   -- Player
   if not self.data.player then
-    local id = w:new_query({ c_type.Player })[1]
+    local id = w:query({ c_type.Player })[1]
     if id == nil then return end
     self.data.player = id
   end

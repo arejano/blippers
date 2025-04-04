@@ -20,6 +20,8 @@ local ctypes = utils.make_enum({
   "SpriteSize",
   "Bullet",
   "LifeTime",
+  "Health"
+
 })
 
 return ctypes

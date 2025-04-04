@@ -8,6 +8,7 @@ local sti = require "libs.sti.sti"
 
 ---@class MapSystem
 local MapSystem = {
+  name = "map_system",
   events = { events.Render, events.ChangeMap },
   current_map = nil,
   maps_name = {},

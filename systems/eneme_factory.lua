@@ -59,21 +59,21 @@ function enemy_factory:start(ecs)
 
   ecs:add_entity({
     { type = c_types.InMovement, data = false },
+    { type = c_types.Health,     data = 100 },
     { type = c_types.Name,       data = "Elon Musk" },
     { type = c_types.Enemy,      data = true },
     { type = c_types.Render,     data = true },
     { type = c_types.Direction,  data = "up" },
     { type = c_types.Speed,      data = 5 },
-
     {
       type = c_types.Transform,
       data = {
-        position = { x = width - width / 3, y = height / 1.5 },
+        position = { x = width / 2, y = height / 2 },
         scale = { sx = 2, sy = 2 },
         angle = 0,
         rotation = { ox = 0, oy = 0 },
         size = {
-          width = 38,
+          width = 42,
           height = 76
         }
       }

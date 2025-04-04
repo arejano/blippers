@@ -2,6 +2,7 @@ local c_type = require 'models.component_types'
 local events = require 'models.game_events'
 
 local BulletMoveSystem = {
+  name = "bullet_movement_system",
   watch = { [c_type.Bullet] = true, },
   events = { events.Tick },
 }
@@ -22,7 +23,6 @@ function BulletMoveSystem:update(world, dt, event)
 
         if transform.position ~= nil then
           transform.position.x = transform.position.x + 1 * 5
-          transform.rotation.ox = transform.rotation.ox + .01
         end
       else
         world:remove_entity(bullet_id)

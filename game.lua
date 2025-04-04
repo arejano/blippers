@@ -39,19 +39,26 @@ function Game:new()
   game.world:add_system(player_movement_system)
   game.world:add_system(camera_follow_system)
   game.world:add_system(camera_system)
-  game.world:add_system(map_system)
+  -- game.world:add_system(map_system)
   game.world:add_system(require "systems.eneme_factory")
   game.world:add_system(player_input_system)
   game.world:add_system(keyboard_system)
-  game.world:add_system(render_system)
-  game.world:add_system(name_render_system)
 
-  game.world:add_system(bullet_system)
-  game.world:add_system(require 'systems.bullet_movement_system')
+
+  -- game.world:add_system(bullet_system)
+  -- game.world:add_system(require 'systems.bullet_movement_system')
+
+  --Render
+  game.world:add_system(render_system)
+  game.world:add_system(require 'systems.isometric_render_system')
+  game.world:add_system(require 'systems.isometric_shadow_system')
+  game.world:add_system(require 'systems.grid_system')
+  game.world:add_system(require 'systems.entity_render_system')
+  game.world:add_system(require 'systems.name_render_system')
+  game.world:add_system(require 'systems.debug_ui_system')
 
 
   -- Debug UI
-  game.world:add_system(require 'systems.debug_ui_system')
 
   game.world:start()
   setmetatable(game, Game)

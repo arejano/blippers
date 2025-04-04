@@ -6,9 +6,6 @@ local Generators = require "core.generators"
 
 local player_factory = {
 	events = {},
-	sprite_regions = {
-		idle = { x = 57, y = 13, width = 20, height = 38 }
-	},
 	sprites_path = {
 		player = 'assets/chrono.png'
 	}
@@ -100,9 +97,10 @@ function player_factory:start(ecs)
 
 	ecs:add_entity({
 		{ type = c_types.Player,       data = true },
+		{ type = c_types.Health,       data = 100 },
 		{ type = c_types.Render,       data = true },
 		{ type = c_types.InMovement,   data = false },
-		{ type = c_types.Name,         data = "Richard Feyman" },
+		{ type = c_types.Name,         data = "Richard Feynman" },
 		{ type = c_types.CameraFollow, data = true },
 		{
 			type = c_types.Transform,
@@ -112,14 +110,14 @@ function player_factory:start(ecs)
 				angle = 0,
 				rotation = { ox = 0, oy = 0 },
 				size = {
-					width = 38,
+					width = 42,
 					height = 76
 				}
 			}
 		},
-		{ type = c_types.Direction,  data = "up" },
-		{ type = c_types.Speed,      data = 5 },
-		{ type = c_types.Sprite,     data = sprite },
+		{ type = c_types.Direction, data = "up" },
+		{ type = c_types.Speed,     data = 500 },
+		{ type = c_types.Sprite,    data = sprite },
 		{
 			type = c_types.Animation,
 			data = {

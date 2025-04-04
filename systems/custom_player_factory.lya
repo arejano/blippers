@@ -64,7 +64,7 @@ function player_factory:start(ecs)
 	ecs:add_entity({
 		{ type = c_types.Player,     data = true },
 		{ type = c_types.InMovement, data = false },
-		{ type = c_types.Position,   data = { x = width / 2, y = height / 2 } },
+		{ type = c_types.Position,   data = { x = 50, y = 50 } },
 		{ type = c_types.Direction,  data = "up" },
 		{ type = c_types.Speed,      data = 5 },
 		{ type = c_types.Sprite,     data = player_sprite },

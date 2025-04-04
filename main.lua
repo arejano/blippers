@@ -9,12 +9,23 @@ function love.load()
   love.window.setTitle("Blippers")
   local width, height, target = utils.get_display_size()
 
+  -- local debug = true
+  local debug = false
+
   -- Configura a janela em fullscreen no monitor desejado
-  love.window.setMode(width, height, {
-    fullscreen = true,
-    display = target,
-    -- resizable = true
-  })
+  if debug then
+    love.window.setMode(width, height, {
+      fullscreen = true,
+      display = target,
+      -- resizable = true
+    })
+  else
+    love.window.setMode(width / 1.5, height / 1.5, {
+      -- fullscreen = true,
+      display = target,
+      -- resizable = true
+    })
+  end
 
   GAME = Game:new()
 end
